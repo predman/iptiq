@@ -1,22 +1,23 @@
 package org.predman.iptiq;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 
-public class RandomStrategy implements LoadBalancerStrategy {
+public class RoundRobinStrategy implements LoadBalancerStrategy {
     
     private final ProviderRegistry providerRegistry;
+    private int counter;
     
-    public RandomStrategy(ProviderRegistry providerRegistry) {
+    public RoundRobinStrategy(ProviderRegistry providerRegistry) {
         this.providerRegistry = providerRegistry;
+        counter = 0;
     }
     
     @Override
     public Provider nextProvider() {
         
         List<String> ids = providerRegistry.getIds();
-        int index = ThreadLocalRandom.current().nextInt(ids.size());
+        int index = counter++ % ids.size();
         String id = ids.get(index);
         return providerRegistry.get(id);
     }
