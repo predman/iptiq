@@ -1,3 +1,8 @@
+# IDEA project files
+*.ipr
+*.iws
+*.iml
+
 # Compiled class file
 *.class
 
