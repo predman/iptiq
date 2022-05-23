@@ -15,3 +15,8 @@ Register a list of provider instances to the Load Balancer - the maximum number 
 NOTES:
 - can emulate java.util.Map semantics (i.e. return the value (provider) from the register method)
 - for this step, assumes single-threaded access to register (i.e. not thread safe)
+
+## Step 3
+
+Develop an algorithm that, when invoking multiple times the Load Balancer on its get() method, should cause the random invocation of the get() method of any registered provider instance.
+
