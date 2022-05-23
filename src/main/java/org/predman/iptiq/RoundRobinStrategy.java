@@ -16,7 +16,7 @@ public class RoundRobinStrategy implements LoadBalancerStrategy {
     @Override
     public Provider nextProvider() {
         
-        List<String> ids = providerRegistry.getIds();
+        List<String> ids = providerRegistry.getActiveIds();
         int index = counter++ % ids.size();
         String id = ids.get(index);
         return providerRegistry.get(id);

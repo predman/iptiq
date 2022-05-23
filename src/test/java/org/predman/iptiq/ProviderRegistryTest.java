@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class ProviderRegistryTest {
+    
     private ProviderRegistry providerRegistry;
     
     @BeforeEach
@@ -55,4 +56,15 @@ public class ProviderRegistryTest {
         }
     }
     
+    @Test
+    public void get_bad_id() {
+        Assertions.assertNull(providerRegistry.get("bad-id"), "Invalid provider id should return null");
+    }
+    
+    @Test
+    public void get_good_id() {
+        Provider provider = new Provider();
+        providerRegistry.register(provider);
+        Assertions.assertEquals(provider, providerRegistry.get(provider.get()), "Valid provider id should return that provider");
+    }
 }
