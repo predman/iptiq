@@ -12,7 +12,7 @@ public class HeartBeatChecker {
         providerRegistry.getIds()
                 .stream()
                 .forEach(id -> {
-                    Provider provider = providerRegistry.get(id);
+                    Checkable provider = providerRegistry.get(id);
                     if (provider.check()) {
                         providerRegistry.markUp(id);
                     } else {
