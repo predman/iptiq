@@ -17,7 +17,7 @@ public class ProviderRegistry {
         providers = new LinkedHashMap<>();
     }
     
-    public void register(Provider provider) {
+    public synchronized void register(Provider provider) {
         
         if (provider == null) {
             throw new IllegalArgumentException("Provider must not be null");
@@ -30,31 +30,35 @@ public class ProviderRegistry {
         providers.put(provider.get(), new ProviderHolder(provider));
     }
     
-    public List<String> getIds() {
+    public synchronized List<String> getIds() {
         return providers.keySet()
                 .stream()
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
     
-    public List<String> getActiveIds() {
+    public synchronized List<String> getActiveIds() {
         return providers.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().enabled())
                 .map(entry -> entry.getKey())
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
     
-    public void markUp(String id) {
-        // FIXME: NPE
-        providers.get(id).markUp();
+    public synchronized void markUp(String id) {
+        ProviderHolder holder = providers.get(id);
+        if (holder != null) {
+            holder.markUp();
+        }
     }
     
-    public void markDown(String id) {
-        // FIXME: NPE
-        providers.get(id).markDown();
+    public synchronized void markDown(String id) {
+        ProviderHolder holder = providers.get(id);
+        if (holder != null) {
+            holder.markDown();
+        }
     }
     
-    public Provider get(String id) {
+    public synchronized Provider get(String id) {
         ProviderHolder holder = providers.get(id);
         if (holder == null) {
             return null;
@@ -62,7 +66,8 @@ public class ProviderRegistry {
         return holder.getProvider();
     }
     
-    public static class ProviderHolder {
+    // package-private for testability
+    static class ProviderHolder {
         
         private static final int MIN_UP_COUNT = 2;
         private Provider provider;
@@ -78,6 +83,7 @@ public class ProviderRegistry {
         }
         
         public void markUp() {
+            // small optimization to avoid wrap around after Integer.MAX_VALUE checks
             if (upCount < MIN_UP_COUNT) {
                 upCount++;
             }
