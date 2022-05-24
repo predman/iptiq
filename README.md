@@ -31,10 +31,14 @@ registered providers.
 
 Develop the possibility to exclude / include a specific provider into the balancer
 
+NOTE: assuming this just means the ability to add/remove providers internally, not via the 'api'
+
 ## Step 6
 
 The load balancer should invoke every X seconds each of its registered providers on a special method called check() to discover if they are alive – if not, it should exclude the
 provider node from load balancing.
+
+NOTE: assuming here the 'check' call returns immediately, otherwise if a potentially long-running call would need/want to limit the duration of the check call with a timeout
 
 ## Step 7
 
